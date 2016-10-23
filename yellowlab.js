@@ -22,11 +22,11 @@ class YellowLab
 	 * HTTP request types. EX (GET, POST, DELETE, PATCH, PUT)
 	 *
 	 * @param {String} url
-	 * @param {Object} data
 	 * @param {String} method
+	 * @param {Object} data
 	 * @return {Promise}
 	 */
-	retreive(url, data, method = REQUEST.POST)
+	retreive(url, method = REQUEST.POST, data = {})
 	{
 		let request = new Request(url, data, method);
 
@@ -40,7 +40,7 @@ class YellowLab
 	 * @param {Object} data
 	 * @return {Promise}
 	 */
-	jsonp(url, data)
+	retreiveJsonp(url, data)
 	{
 		let request = new Request(url, data, REQUEST.JSONP)
 
@@ -48,4 +48,4 @@ class YellowLab
 	}
 }
 
-exports default YellowLab;
+export default YellowLab;

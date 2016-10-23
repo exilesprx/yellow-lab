@@ -15,9 +15,6 @@ export const HEADERS = {
     JSON: "application/json",
     FORM_ENCODED: "application/x-www-form-urlencoded"
   },
-  CONNECTION: {
-    CLOSE: "close"
-  },
   REQUESTED: "XMLHttpRequest"
 }
 
@@ -26,4 +23,4 @@ export const HEADERS = {
  */
 export const ACTIVEX = "Microsoft.XMLHTTP";
 
-exports default REQUEST;
+export default REQUEST;

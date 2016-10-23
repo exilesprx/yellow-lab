@@ -26,4 +26,4 @@ export const HEADERS = {
  */
 export const ACTIVEX = "Microsoft.XMLHTTP";
 
-exports default REQUEST;
+export default REQUEST;

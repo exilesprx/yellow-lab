@@ -17,6 +17,8 @@ class Request
     this.data = data;
     this.method = method;
     this.namespace = namespace;
+    this.resolve = null;
+    this.reject = null;
   }
 
   /**
@@ -28,33 +30,33 @@ class Request
    */
   handle(resolve, reject)
   {
+    this.resolve = resolve;
+    this.reject = reject;
+
     switch(this.method)
     {
       case REQUEST.GET:
-        this.__get(resolve, reject);
+        this.__get();
         break;
 
       case REQUEST.POST:
-        this.__post(resolve, reject);
+        this.__post();
         break;
 
       case REQUEST.JSONP:
-        this.__jsonp(resolve, reject);
+        this.__jsonp();
         break;
 
       default:
-        this.__get(resolve, reject);
+        this.__get();
         break;
     }
   }
 
   /**
    * Makes a GET request to the specified URL.
-   *
-   * @param {Function} resolve
-   * @param {Function} reject
    */
-  __get(resolve, reject)
+  __get()
   {
     let queryString = this.__getQueryString(this.data);
 
@@ -62,8 +64,7 @@ class Request
 
     if (request) {
 
-      //let setRequestHeader = request.setRequestHeader.bind(request);
-      request.onreadystatechange = stateChange.bind(this, request, resolve, reject);
+      request.onreadystatechange = stateChange.bind(request);
       request.open(REQUEST.GET, this.url, true);
       request.setRequestHeader('Content-type', HEADERS.CONTENT_TYPE.JSON);
       request.send(queryString);
@@ -72,20 +73,15 @@ class Request
 
   /**
    *  Makes a POST request to the specified URL.
-   *
-   * @param {Function} resolve
-   * @param {Function} reject
    */
-  __post(resolve, reject)
+  __post()
   {
     let queryString = this.__getQueryString(this.data);
 
-    let request = getRequest();
+    let request = this.__getRequest();
 
     if (request) {
-
-      //let setRequestHeader = request.setRequestHeader.bind(request);
-      request.onreadystatechange = stateChange.bind(this, request, resolve, reject);
+      request.onreadystatechange = this.__stateChange.bind(request);
       request.open(REQUEST.POST, this.url, true);
       request.setRequestHeader('X-Requested-With', HEADERS.REQUESTED);
       request.setRequestHeader('Content-type', HEADERS.CONTENT_TYPE.FORM_ENCODED);
@@ -114,18 +110,15 @@ class Request
    * Listener of the state change of the browser request object.
    *
    * @param {ActiveXObject|XMLHttpRequest} request
-   * @param {Function} resolve
-   * @param {Function} reject
    */
-  __stateChange(request, resolve, reject)
+  __stateChange(request)
   {
-
     if (request.readyState == 4) {
       //TODO: Get status code and call resolve or reject based on the status code.
       try {
-        resolve(JSON.parse(request.responseText));
+        this.resolve(JSON.parse(request.responseText));
       } catch (exception) {
-          resolve(request.responseText);
+          this.resolve(request.responseText);
       }
     }
   };
@@ -174,17 +167,14 @@ class Request
   /**
    * Make a JSONP request and the resolver function is called
    * once the request is complete.
-   *
-   * @param {Function} resolve
-   * @param {Function} reject
    */
-  __jsonp(resolve, reject) {
+  __jsonp() {
 
     let queryString = this.__getQueryString(this.data);
-    let functionName = 'jsonp' + getRandomInt(1000000, 9999999);
+    let functionName = 'jsonp' + this.__getRandomInt(1000000, 9999999);
 
-    window[functionName] = function(data) {
-      resolve(data);
+    window[functionName] = (data) => {
+      this.resolve(data);
       window[functionName] = undefined;
     };
 
@@ -206,3 +196,5 @@ class Request
     return Math.floor(Math.random() * (max - min)) + min;
   }
 }
+
+export default Request;

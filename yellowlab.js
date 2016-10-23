@@ -40,7 +40,7 @@ class YellowLab
 	 * @param {Object} data
 	 * @return {Promise}
 	 */
-	jsonp(url, data)
+	retreiveJsonp(url, data)
 	{
 		let request = new Request(url, data, REQUEST.JSONP)
 
@@ -48,4 +48,4 @@ class YellowLab
 	}
 }
 
-exports default YellowLab;
+export default YellowLab;

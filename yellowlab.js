@@ -28,9 +28,9 @@ class YellowLab
 	 */
 	retreive(url, method = REQUEST.POST, data = {})
 	{
-		let request = new Request(url, data, method);
+		let request = this.getNewRequest(url, method, data);
 
-		return new Promise(request.handle.bind(request));
+		return this.getNewPromise(request.handle.bind(request));
 	}
 
 	/**
@@ -42,9 +42,43 @@ class YellowLab
 	 */
 	retreiveJsonp(url, data)
 	{
-		let request = new Request(url, data, REQUEST.JSONP)
+		let request = this.getNewRequest(url, REQUEST.JSONP, data)
 
-		return new Promise(request.handle.bind(request));
+		return this.getNewPromise(request.handle.bind(request));
+	}
+
+	/**
+	 * Get a new Request instance.
+	 *
+	 * @param {String} url
+	 * @param {String} method
+	 * @param {Object} data
+	 * @return {Request}
+	 */
+	getNewRequest(url, method, data)
+	{
+		return new Request(url, data, method);
+	}
+
+	/**
+	 * Get a new Promise instance.
+	 *
+	 * @param {Function} handler
+	 * @return {Promise}
+	 */
+	getNewPromise(handler)
+	{
+		return new Promise(handler);
+	}
+
+	/**
+	 * Get the query namespace.
+	 *
+	 * @return {String}
+	 */
+	getQueryNamespace()
+	{
+		return this.queryNamespace;
 	}
 }
 

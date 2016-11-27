@@ -63,7 +63,7 @@ class Request
     let request = this.__getRequest();
 
     if (request) {
-
+      
       request.onreadystatechange = this.__stateChange.bind(this, request);
       request.open(REQUEST.GET, this.url, true);
       request.setRequestHeader('Content-type', HEADERS.CONTENT_TYPE.JSON);

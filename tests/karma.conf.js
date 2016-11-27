@@ -1,16 +1,17 @@
 // Karma configuration
 // Generated on Sun Oct 30 2016 00:13:33 GMT-0400 (EDT)
+var path = require("path");
 
 module.exports = function(config) {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: './',
+    basePath: '',
 
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['browserify', 'mocha', 'chai', 'sinon'],
+    frameworks: ['mocha', 'chai', 'sinon'],
 
 
     // list of files / patterns to load in the browser
@@ -27,12 +28,33 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      './specs/*Spec.js': ['browserify']
+      './specs/*Spec.js': ['webpack']
     },
-    browserify: {
-      transform: [
-        ['babelify', { presets: ['es2015']}]
-      ]
+
+    webpack: {
+    	module: {
+        noParse: [
+          /node_modules\/sinon\//,
+        ],
+    		loaders: [
+    			{
+    				test: /\.js$/,
+            exclude: /(node_modules|bower_components)/,
+    				loader: "babel-loader",
+            query: {
+              presets: ["babel-preset-es2015"].map(require.resolve)
+            }
+    			}
+    		]
+    	},
+      resolveLoader: {
+        root: path.join(__dirname, 'node_modules')
+      },
+      resolve: {
+        alias: {
+          sinon: 'sinon/pkg/sinon',
+        },
+      }
     },
 
 

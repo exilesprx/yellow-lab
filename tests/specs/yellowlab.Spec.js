@@ -15,14 +15,14 @@ describe("YellowLab", function()
     {
       let yl = new YellowLab();
 
-      expect(yl.queryNamespace).to.equal("data");
+      expect(yl).to.have.property('queryNamespace').and.equal("data");
     })
 
     it("has a namespace of foo", function()
     {
       let yl = new YellowLab("foo");
 
-      expect(yl.queryNamespace).to.equal("foo");
+      expect(yl).to.have.property('queryNamespace').and.equal("foo");
     })
 
   });

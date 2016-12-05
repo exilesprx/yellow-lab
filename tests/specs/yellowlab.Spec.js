@@ -15,14 +15,14 @@ describe("YellowLab", function()
     {
       let yl = new YellowLab();
 
-      expect(yl).to.have.property('queryNamespace').and.equal("data");
+      expect(yl).to.have.property("queryNamespace").and.equal("data");
     })
 
     it("has a namespace of foo", function()
     {
       let yl = new YellowLab("foo");
 
-      expect(yl).to.have.property('queryNamespace').and.equal("foo");
+      expect(yl).to.have.property("queryNamespace").and.equal("foo");
     })
 
   });
@@ -147,7 +147,7 @@ describe("YellowLab", function()
         })
       );
 
-      let promise = yl.retreive('');
+      let promise = yl.retreive("");
 
       expect(promise).to.be.an.instanceOf(Promise);
     });
@@ -237,7 +237,7 @@ describe("YellowLab", function()
 
       expect(promiseSpy.calledOnce).to.be.true;
 
-      expect(argument).to.be.a('function');
+      expect(argument).to.be.a("function");
 
       expect(argument).to.be.an.instanceOf(handler.constructor);
 

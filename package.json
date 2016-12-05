@@ -18,5 +18,8 @@
   },
   "scripts": {
     "test": "./tests/node_modules/karma/bin/rma start karma.conf.js"
+  },
+  "devDependencies": {
+    "eslint": "^3.11.1"
   }
 }

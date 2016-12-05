@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-import REQUEST, { HEADERS, ACTIVEX } from './constants';
+import REQUEST, { HEADERS, ACTIVEX } from "./constants";
 
 class Request
 {
@@ -33,14 +33,11 @@ class Request
     this.resolve = resolve;
     this.reject = reject;
 
-    switch(this.method)
-    {
-      case REQUEST.GET:
-        this.__get();
-        break;
+    switch(this.method) {
 
+      case REQUEST.GET:
       case REQUEST.POST:
-        this.__post();
+        this.__http();
         break;
 
       case REQUEST.JSONP:
@@ -48,44 +45,52 @@ class Request
         break;
 
       default:
-        this.__get();
+        this.__http();
         break;
     }
   }
 
   /**
-   * Makes a GET request to the specified URL.
+   * Makes a HTTP request to the specified URL.
    */
-  __get()
+  __http()
   {
     let queryString = this.__getQueryString(this.data);
 
     let request = this.__getRequest();
 
-    if (request) {
+    if(this.__isValidRequestObject(request)) {
 
-      request.onreadystatechange = this.__stateChange.bind(this, request);
-      request.open(REQUEST.GET, this.url, true);
-      request.setRequestHeader('Content-type', HEADERS.CONTENT_TYPE.JSON);
+      this.__setupRequest(request);
+
       request.send(queryString);
     }
   }
 
   /**
-   *  Makes a POST request to the specified URL.
+   * Setup the request object for execution.
+   *
+   * @param {ActiveXObject|XMLHttpRequest} request
    */
-  __post()
+  __setupRequest(request)
   {
-    let queryString = this.__getQueryString(this.data);
+    request.onreadystatechange = this.__stateChange.bind(this, request);
+    request.open(this.method, this.url, true);
 
-    let request = this.__getRequest();
+    switch(this.method) {
 
-    if (request) {
-      request.onreadystatechange = this.__stateChange.bind(this, request);
-      request.open(REQUEST.POST, this.url, true);
-      request.setRequestHeader('X-Requested-With', HEADERS.REQUESTED);
-      request.setRequestHeader('Content-type', HEADERS.CONTENT_TYPE.FORM_ENCODED);
-      request.send(queryString);
+      case REQUEST.GET:
+        request.setRequestHeader("Content-type", HEADERS.CONTENT_TYPE.JSON);
+        break;
+
+      case REQUEST.POST:
+        request.setRequestHeader("X-Requested-With", HEADERS.REQUESTED);
+        request.setRequestHeader("Content-type", HEADERS.CONTENT_TYPE.FORM_ENCODED);
+        break;
+
+      default:
+        request.setRequestHeader("Content-type", HEADERS.CONTENT_TYPE.JSON);
+        break;
     }
   }
 
@@ -106,18 +111,49 @@ class Request
   };
 
   /**
+   * Determine is the request object is valid.
+   *
+   * @param {ActiveXObject|XMLHttpRequest} request
+   * @return {Boolean}
+   */
+  __isValidRequestObject(request)
+  {
+    if(window.ActiveXObject != undefined && !(request instanceof ActiveXObject)) {
+      return false;
+    } else if(window.XMLHttpRequest != undefined && !(request instanceof XMLHttpRequest)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
    * Listener of the state change of the browser request object.
    *
    * @param {ActiveXObject|XMLHttpRequest} request
    */
   __stateChange(request)
   {
+    let response;
+
     if (request.readyState == 4) {
-      //TODO: Get status code and call resolve or reject based on the status code.
+      
       try {
-        this.resolve(JSON.parse(request.responseText));
+        response = JSON.parse(request.responseText);
       } catch (exception) {
-          this.resolve(request.responseText);
+        response = request.responseText;
+      }
+
+      switch(request.status) {
+
+          case 200:
+          case 202:
+            this.resolve(response);
+            break;
+        
+          default:
+            this.reject(response);
+            break;
       }
     }
   };
@@ -148,7 +184,7 @@ class Request
         else {
 
           if(prevStack) {
-            stack.push(this.namespace + prevStack + "[" + key + "]" + '=' + params[key]);
+            stack.push(this.namespace + prevStack + "[" + key + "]" + "=" + params[key]);
           } else {
             stack.push(key + "=" + params[key]);
           }
@@ -170,17 +206,17 @@ class Request
   __jsonp() {
 
     let queryString = this.__getQueryString(this.data);
-    let functionName = 'jsonp' + this.__getRandomInt(1000000, 9999999);
+    let functionName = "jsonp" + this.__getRandomInt(1000000, 9999999);
 
     window[functionName] = (data) => {
       this.resolve(data);
       window[functionName] = undefined;
     };
 
-    let script = document.createElement('script');
-    let head = document.getElementsByTagName('head');
+    let script = document.createElement("script");
+    let head = document.getElementsByTagName("head");
     script.src = this.url + "?callback=" + functionName + "&" + queryString;
-    script.type = 'text/javascript';
+    script.type = "text/javascript";
     head[0].appendChild(script);
   };
 

@@ -4,12 +4,22 @@
   "description": "Ajax request library.",
   "main": "index.js",
   "repository": {
-    "url": "git@bitbucket.org:exilesprx/yellow-lab.git",
+    "url": "git+ssh://git@bitbucket.org/exilesprx/yellow-lab.git",
     "type": "git"
   },
   "author": "Andrew Campbell <campbell.andrew86@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "promise": "^7.1.1"
+  },
+  "homepage": "https://bitbucket.org/exilesprx/yellow-lab#readme",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "./tests/node_modules/karma/bin/rma start karma.conf.js"
+  },
+  "devDependencies": {
+    "eslint": "^3.11.1"
   }
 }

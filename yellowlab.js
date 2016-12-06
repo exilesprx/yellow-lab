@@ -1,19 +1,17 @@
-'use strict';
+"use strict";
 
-import Promise from 'promise';
-import Request from './libs/request';
-import REQUEST from './libs/constants';
+import Promise from "promise";
+import Request from "./libs/request";
+import REQUEST from "./libs/constants";
 
-class YellowLab
-{
+class YellowLab {
 	/**
 	 * Create a new instance.
 	 * @param {String} namespace
 	 */
-	constructor(namespace = 'data')
-	{
-		this.queryNamespace = namespace;
-	}
+    constructor(namespace = "data") {
+        this.queryNamespace = namespace;
+    }
 
 	/**
 	 * Make a request.
@@ -26,12 +24,11 @@ class YellowLab
 	 * @param {Object} data
 	 * @return {Promise}
 	 */
-	retreive(url, method = REQUEST.POST, data = {})
-	{
-		let request = this.getNewRequest(url, method, data);
+    retreive(url, method = REQUEST.POST, data = {}) {
+        let request = this.getNewRequest(url, method, data);
 
-		return this.getNewPromise(request.handle.bind(request));
-	}
+        return this.getNewPromise(request.handle.bind(request));
+    }
 
 	/**
 	 * Make a JSONP request.
@@ -40,12 +37,11 @@ class YellowLab
 	 * @param {Object} data
 	 * @return {Promise}
 	 */
-	retreiveJsonp(url, data)
-	{
-		let request = this.getNewRequest(url, REQUEST.JSONP, data)
+    retreiveJsonp(url, data) {
+        let request = this.getNewRequest(url, REQUEST.JSONP, data);
 
-		return this.getNewPromise(request.handle.bind(request));
-	}
+        return this.getNewPromise(request.handle.bind(request));
+    }
 
 	/**
 	 * Get a new Request instance.
@@ -55,10 +51,9 @@ class YellowLab
 	 * @param {Object} data
 	 * @return {Request}
 	 */
-	getNewRequest(url, method, data)
-	{
-		return new Request(url, data, method);
-	}
+    getNewRequest(url, method, data) {
+        return new Request(url, data, method);
+    }
 
 	/**
 	 * Get a new Promise instance.
@@ -66,20 +61,18 @@ class YellowLab
 	 * @param {Function} handler
 	 * @return {Promise}
 	 */
-	getNewPromise(handler)
-	{
-		return new Promise(handler);
-	}
+    getNewPromise(handler) {
+        return new Promise(handler);
+    }
 
 	/**
 	 * Get the query namespace.
 	 *
 	 * @return {String}
 	 */
-	getQueryNamespace()
-	{
-		return this.queryNamespace;
-	}
+    getQueryNamespace() {
+        return this.queryNamespace;
+    }
 }
 
 export default YellowLab;

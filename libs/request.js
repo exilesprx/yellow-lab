@@ -72,7 +72,7 @@ class Request {
         request.onreadystatechange = this.__stateChange.bind(this, request);
         request.open(this.method, this.url, true);
 
-        switch (this.method) {
+        switch(this.method) {
 
             case REQUEST.GET:
                 request.setRequestHeader("Content-type", HEADERS.CONTENT_TYPE.JSON);

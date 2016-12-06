@@ -6,286 +6,236 @@ import Request from "../../libs/request";
 import REQUEST from "../../libs/constants";
 import sinon from "sinon";
 
-describe("YellowLab", function()
-{
-  describe("Initialization", function()
-  {
+describe("YellowLab", function () {
+    describe("Initialization", function () {
 
-    it("has a namespace of data", function()
-    {
-      let yl = new YellowLab();
+        it("has a namespace of data", function () {
+            let yl = new YellowLab();
 
-      expect(yl).to.have.property("queryNamespace").and.equal("data");
-    })
+            expect(yl).to.have.property("queryNamespace").and.equal("data");
+        });
 
-    it("has a namespace of foo", function()
-    {
-      let yl = new YellowLab("foo");
+        it("has a namespace of foo", function () {
+            let yl = new YellowLab("foo");
 
-      expect(yl).to.have.property("queryNamespace").and.equal("foo");
-    })
+            expect(yl).to.have.property("queryNamespace").and.equal("foo");
+        });
 
-  });
-
-  describe("Get new Request", function() {
-
-    let yl;
-
-    before(function() {
-      yl = new YellowLab();
-    })
-
-    it("creates a new request", function() {
-
-      let req = yl.getNewRequest("a","b", {});
-      let req2 = yl.getNewRequest("c", "d", {});
-
-      expect(req).to.be.an.instanceOf(Request);
-
-      expect(req2).to.not.equal(req);
-    });
-  });
-
-  describe("Get new Promise", function() {
-
-    let yl;
-
-    before(function() {
-      yl = new YellowLab();
-    })
-
-    //After each test, we need to restore the original function.
-    afterEach(function() {
-      yl.getNewPromise.restore();
-    })
-
-    it("creates a new promise and the promise has the first argument set as 'handler'", function(done) {
-
-      let pr = sinon.spy(yl, "getNewPromise")
-
-      let arg = () => { done(); };
-
-      let pro = yl.getNewPromise(arg);
-      let pro2 = yl.getNewPromise(arg);
-
-      let argument = yl.getNewPromise.getCall(0).args[0];
-
-      expect(pro).to.be.an.instanceOf(Promise);
-
-      expect(argument).to.equal(arg);
-
-      expect(pro2).to.not.equal(pro);
-    })
-  })
-
-  describe("Method GET and POST", function()
-  {
-    let yl;
-
-    //Before everything we need to create a instance.
-    before(function() {
-      yl = new YellowLab();
     });
 
-    //After each test, we need to restore the original function.
-    afterEach(function() {
-      yl.getNewPromise.restore();
-    })
+    describe("Get new Request", function () {
 
-    it("should call getNewRequest with arguments one time", function() {
+        let yl;
 
-      let url = "test";
-      let method = REQUEST.POST;
-      let data = {name: "test"};
+        before(function () {
+            yl = new YellowLab();
+        });
 
-      //We need to spy on this method so that we know if this method was called with the proper values.
-      let requestSpy = sinon.spy(yl, "getNewRequest").withArgs(url, method, data);
+        it("creates a new request", function () {
 
-      //We need to stub this method so that a real request and promise are not executed.
-      sinon.stub(yl, "getNewPromise").returns(null);
+            let req = yl.getNewRequest("a", "b", {});
+            let req2 = yl.getNewRequest("c", "d", {});
 
-      yl.retreive(url, method, data);
+            expect(req).to.be.an.instanceOf(Request);
 
-      expect(requestSpy.calledOnce).to.be.true;
-
-      yl.getNewRequest.restore();
-    })
-
-    it("should call getNewPromise with a handler function one time", function() {
-
-      let handler = {
-        handle: () => {}
-      };
-      let url = "test";
-      let method = REQUEST.POST;
-      let data = {name: "test"};
-
-      //We need to spy on this method so that we know if this method was called with the proper values.
-      sinon.stub(yl, "getNewRequest").returns(handler);
-
-      let promiseSpy = sinon.spy(yl, "getNewPromise");
-
-      yl.retreive(url, method, data);
-
-      let argument = yl.getNewPromise.getCall(0).args[0];
-
-      expect(promiseSpy.calledOnce).to.be.true;
-
-      expect(argument).to.be.a("function");
-
-      expect(argument).to.be.an.instanceOf(handler.constructor);
-
-      yl.getNewRequest.restore();
-    })
-
-    it("should return a promise", function()
-    {
-      //We need to stub this method so that a real request and promise are not executed.
-      sinon.stub(yl, "getNewPromise").returns(
-        new Promise((res, req) => {
-          return res(1);
-        })
-      );
-
-      let promise = yl.retreive("");
-
-      expect(promise).to.be.an.instanceOf(Promise);
+            expect(req2).to.not.equal(req);
+        });
     });
 
-    it("should resolve with a value of 1", function(done)
-    {
-      //We need to stub this method so that a real request and promise are not executed.
-      sinon.stub(yl, "getNewPromise").returns(
-        new Promise((res, req) => {
-          return res(1);
-        })
-      );
+    describe("Get new Promise", function () {
 
-      yl.retreive("").then((data) => {
-        expect(data).to.equal(1);
-        done();
-      });
-    })
+        let yl;
+        let sandbox;
 
-    it("should reject with a value of 2", function(done)
-    {
-      //We need to stub this method so that a real request and promise are not executed.
-      sinon.stub(yl, "getNewPromise").returns(
-        new Promise((res, req) => {
-          return req(2);
-        })
-      )
+        before(function () {
 
-      yl.retreive("").catch((data) => {
-        expect(data).to.equal(2);
-        done();
-      })
-    })
+            sandbox = sinon.sandbox.create();
 
-  });
+            yl = new YellowLab();
+        });
 
-  describe("Method JSONP", function()
-  {
-    let yl;
+        afterEach(function () {
+            sandbox.restore();
+        });
 
-    //Before everything we need to create a instance.
-    before(function() {
-      yl = new YellowLab();
+        it("creates a new promise and the promise has the first argument set as 'handler'", function (done) {
+
+            let handler = () => { done(); };
+
+            let promiseOne = yl.getNewPromise(handler);
+            let promiseTwo = yl.getNewPromise(handler);
+
+            expect(promiseOne).to.be.an.instanceOf(Promise);
+            
+            expect(promiseTwo).to.be.an.instanceOf(Promise);
+
+            expect(promiseOne.calledWith(handler)).to.be.true;
+
+            expect(promiseTwo.calledWith(handler)).to.be.true;
+
+            expect(promiseOne).to.not.equal(promiseTwo);
+        });
+
+        it("should resolve with a value of 1", function (done) {
+            
+            let handler = (resolve, reject) => {
+                return resolve(1);
+            };
+
+            yl.getNewPromise(handler).then((data) => {
+                
+                expect(data).to.equal(1);
+                done();
+            });
+        });
+
+        it("should reject with a value of 2", function (done) {
+            
+            let handler = (resolve, reject) => {
+                return reject(2);
+            };
+
+            yl.getNewPromise(handler).catch((data) => {
+                
+                expect(data).to.equal(2);
+                done();
+            });
+        });
     });
 
-    //After each test, we need to restore the original function.
-    afterEach(function() {
-      yl.getNewPromise.restore();
-    })
+    describe("Method GET and POST", function () {
 
-    it("should call getNewRequest with arguments one time", function() {
+        let yl;
+        let url = "test";
+        let method = REQUEST.POST;
+        let data = { name: "test" };
+        let sandbox;
+        let requestStub;
+        let promiseStub;
+        let handler;
 
-      let url = "test";
-      let method = REQUEST.JSONP;
-      let data = {name: "test"};
+        before(function () {
 
-      //We need to spy on this method so that we know if this method was called with the proper values.
-      let requestSpy = sinon.spy(yl, "getNewRequest").withArgs(url, method, data);
+            sandbox = sinon.sandbox.create();
 
-      //We need to stub this method so that a real request and promise are not executed.
-      sinon.stub(yl, "getNewPromise").returns(null);
+            yl = new YellowLab();
+        });
 
-      yl.retreiveJsonp(url, data);
+        beforeEach(function() {
 
-      expect(requestSpy.calledOnce).to.be.true;
+            handler = {
+                handle: () => {}
+            };
 
-      yl.getNewRequest.restore();
-    })
+            requestStub = sandbox.stub(yl, "getNewRequest").returns(handler);
 
-    it("should call getNewPromise with a handler function one time", function() {
+            promiseStub = sandbox.stub(yl, "getNewPromise");
+        });
 
-      let handler = {
-        handle: () => {}
-      };
-      let url = "test";
-      let method = REQUEST.POST;
-      let data = {name: "test"};
+        afterEach(function () {
+            sandbox.restore();
+        });
 
-      //We need to spy on this method so that we know if this method was called with the proper values.
-      sinon.stub(yl, "getNewRequest").returns(handler);
+        it("should call getNewRequest with arguments one time", function () {
 
-      let promiseSpy = sinon.spy(yl, "getNewPromise");
+            promiseStub.returns(null);
 
-      yl.retreiveJsonp(url, method, data);
+            yl.retreive(url, method, data);
 
-      let argument = yl.getNewPromise.getCall(0).args[0];
+            expect(requestStub.calledOnce).to.be.true;
 
-      expect(promiseSpy.calledOnce).to.be.true;
+            expect(requestStub.calledWith(sinon.match.string, sinon.match.string, sinon.match.object));
+        });
 
-      expect(argument).to.be.a("function");
+        it("should call getNewPromise with a handler function one time", function () {
 
-      expect(argument).to.be.an.instanceOf(handler.constructor);
+            promiseStub.returns(null);
 
-      yl.getNewRequest.restore();
-    })
+            yl.retreive(url, method, data);
 
-    it("should return a promise", function()
-    {
-      //We need to stub this method so that a real request and promise are not executed.
-      sinon.stub(yl, "getNewPromise").returns(
-        new Promise((res, req) => {
-          return res(1);
-        })
-      );
+            expect(promiseStub.calledOnce).to.be.true;
 
-      let promise = yl.retreiveJsonp("");
+            expect(promiseStub.calledWith(sinon.match.func)).to.be.true;
 
-      expect(promise).to.be.an.instanceOf(Promise);
+            expect(promiseStub.calledWith(sinon.match.instanceOf(handler.constructor))).to.be.true;
+        });
+
+        it("should return a promise", function (done) {
+
+            promiseStub.returns(
+                new Promise(() => { done(); })
+            );
+
+            let promise = yl.retreive("");
+
+            expect(promise).to.be.an.instanceOf(Promise);
+        });
     });
 
-    it("should resolve with a value of 1", function(done)
-    {
-      //We need to stub this method so that a real request and promise are not executed.
-      sinon.stub(yl, "getNewPromise").returns(
-        new Promise((res, req) => {
-          return res(1);
-        })
-      );
+    describe("Method JSONP", function () {
 
-      yl.retreiveJsonp("").then((data) => {
-        expect(data).to.equal(1);
-        done();
-      });
-    })
+        let yl;
+        let url = "test";
+        let method = REQUEST.POST;
+        let data = { name: "test" };
+        let sandbox;
+        let requestStub;
+        let promiseStub;
+        let handler;
 
-    it("should reject with a value of 2", function(done)
-    {
-      //We need to stub this method so that a real request and promise are not executed.
-      sinon.stub(yl, "getNewPromise").returns(
-        new Promise((res, req) => {
-          return req(2);
-        })
-      )
+        before(function () {
 
-      yl.retreiveJsonp("").catch((data) => {
-        expect(data).to.equal(2);
-        done();
-      })
-    })
-  });
+            sandbox = sinon.sandbox.create();
+
+            yl = new YellowLab();
+        });
+
+        beforeEach(function() {
+
+            handler = {
+                handle: () => {}
+            };
+
+            requestStub = sandbox.stub(yl, "getNewRequest").returns(handler);
+
+            promiseStub = sandbox.stub(yl, "getNewPromise");
+        });
+
+        afterEach(function () {
+            sandbox.restore();
+        });
+
+        it("should call getNewRequest with arguments one time", function () {
+
+            yl.retreiveJsonp(url, data);
+
+            expect(requestStub.calledOnce).to.be.true;
+            
+            expect(requestStub.calledWith(sinon.match.string, sinon.match.string, sinon.match.object));
+        });
+
+        it("should call getNewPromise with a handler function one time", function () {
+
+            promiseStub.returns(null);
+
+            yl.retreiveJsonp(url, data);
+
+            expect(promiseStub.calledOnce).to.be.true;
+
+            expect(promiseStub.calledWith(sinon.match.func)).to.be.true;
+
+            expect(promiseStub.calledWith(sinon.match.instanceOf(handler.constructor))).to.be.true;
+        });
+
+        it("should return a promise", function (done) {
+
+            promiseStub.returns(
+                new Promise(() => { done(); })
+            );
+
+            let promise = yl.retreive("");
+
+            expect(promise).to.be.an.instanceOf(Promise);
+        });
+    });
 });

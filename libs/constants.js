@@ -2,20 +2,20 @@
  * Object for HTTP requests verbs.
  */
 const REQUEST = {
-  GET: "GET",
-  POST: "POST",
-  JSONP: "JSONP"
+    GET: "GET",
+    POST: "POST",
+    JSONP: "JSONP"
 }
 
 /**
  * Object for header values.
  */
 export const HEADERS = {
-  CONTENT_TYPE: {
-    JSON: "application/json",
-    FORM_ENCODED: "application/x-www-form-urlencoded"
-  },
-  REQUESTED: "XMLHttpRequest"
+    CONTENT_TYPE: {
+        JSON: "application/json",
+        FORM_ENCODED: "application/x-www-form-urlencoded"
+    },
+    REQUESTED: "XMLHttpRequest"
 }
 
 /**

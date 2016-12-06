@@ -146,7 +146,7 @@ describe("Request", function () {
 
             expect(queryStringStub.calledOnce).to.be.true;
             expect(queryStringStub.calledWith(data)).to.be.true;
-            expect(queryStringStub.calledWith(sinon.match.typeOf("object"))).to.be.true;
+            expect(queryStringStub.calledWith(sinon.match.object)).to.be.true;
         });
 
         it("calls getRequest once", function () {
@@ -186,7 +186,7 @@ describe("Request", function () {
 
             expect(sendStub.calledOnce).to.be.true;
             expect(sendStub.calledWith(queryString)).to.be.true;
-            expect(sendStub.calledWith(sinon.match.typeOf("string")));
+            expect(sendStub.calledWith(sinon.match.string));
         });
 
     });

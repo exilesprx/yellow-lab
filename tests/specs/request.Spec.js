@@ -44,19 +44,22 @@ describe("Request", function () {
         let jsonp;
         let res = () => { return "resolve"; };
         let rej = () => { return "reject"; };
+        let sandbox;
 
         before(function () {
+
+            sandbox = sinon.sandbox.create();
+
             request = new Request("", {}, REQUEST.GET);
         });
 
         beforeEach(function () {
-            http = sinon.stub(request, "__http").returns(1);
-            jsonp = sinon.stub(request, "__jsonp").returns(1);
+            http = sandbox.stub(request, "__http");
+            jsonp = sandbox.stub(request, "__jsonp");
         });
 
         afterEach(function () {
-            request.__http.restore();
-            request.__jsonp.restore();
+            sandbox.restore();
         });
 
         it("should call handle with two arguments which are of type Function", function () {
@@ -104,6 +107,7 @@ describe("Request", function () {
         let data = { name: "test" };
         let method = REQUEST.GET;
         let xhr;
+        let sandbox;
         let queryStringStub;
         let requestStub;
         let isValidRequestStub;
@@ -111,6 +115,9 @@ describe("Request", function () {
         let sendStub;
 
         before(function () {
+
+            sandbox = sinon.sandbox.create();
+
             FakeXhr = sinon.useFakeXMLHttpRequest();
 
             request = new Request(url, data, method);
@@ -119,19 +126,15 @@ describe("Request", function () {
         });
 
         beforeEach(function () {
-            queryStringStub = sinon.stub(request, "__getQueryString");
-            requestStub = sinon.stub(request, "__getRequest");
-            isValidRequestStub = sinon.stub(request, "__isValidRequestObject");
-            setupRequestStub = sinon.stub(request, "__setupRequest");
-            sendStub = sinon.stub(xhr, "send").returns(true);
+            queryStringStub = sandbox.stub(request, "__getQueryString");
+            requestStub = sandbox.stub(request, "__getRequest");
+            isValidRequestStub = sandbox.stub(request, "__isValidRequestObject");
+            setupRequestStub = sandbox.stub(request, "__setupRequest");
+            sendStub = sandbox.stub(xhr, "send").returns(true);
         });
 
         afterEach(function () {
-            request.__getQueryString.restore();
-            request.__getRequest.restore();
-            request.__isValidRequestObject.restore();
-            request.__setupRequest.restore();
-            xhr.send.restore();
+            sandbox.restore();
         });
 
         after(function () {
@@ -195,11 +198,15 @@ describe("Request", function () {
         let data = { name: "test" };
         let method = REQUEST.GET;
         let xhr;
+        let sandbox;
         let openSpy;
         let setRequestHeaderSpy;
         let stateChangeStub;
 
         before(function () {
+
+            sandbox = sinon.sandbox.create();
+
             FakeXhr = sinon.useFakeXMLHttpRequest();
 
             request = new Request(url, data, method);
@@ -209,15 +216,13 @@ describe("Request", function () {
 
         beforeEach(function () {
             let stateChange = () => { return "I am state change"; };
-            stateChangeStub = sinon.stub(request, "__stateChange").returns(stateChange);
-            openSpy = sinon.spy(xhr, "open");
-            setRequestHeaderSpy = sinon.spy(xhr, "setRequestHeader");
+            stateChangeStub = sandbox.stub(request, "__stateChange").returns(stateChange);
+            openSpy = sandbox.spy(xhr, "open");
+            setRequestHeaderSpy = sandbox.spy(xhr, "setRequestHeader");
         });
 
         afterEach(function () {
-            request.__stateChange.restore();
-            xhr.open.restore();
-            xhr.setRequestHeader.restore();
+            sandbox.restore();
         });
 
         it("should have a request object with the property onreadystatechange set to __stateChange", function () {
@@ -373,6 +378,136 @@ describe("Request", function () {
             let isValid = request.__isValidRequestObject("Some string");
             
             expect(isValid).to.be.false;
+        });
+    });
+
+    describe("Get query string", function() {
+
+        let request;
+        let url = "http://test.com";
+        let data = { name: "Test", value: 30 };
+        let method = REQUEST.GET;
+
+        before(function() {
+
+            request = new Request(url, data, method);
+        });
+
+        it("should take a flat object as its argument and return a query string", function() {
+
+            let queryString = "name=Test&value=30";
+
+            let queryStringResult = request.__getQueryString(data);
+
+            expect(queryStringResult).to.equal(queryString);
+        });
+
+        it("should take a nested object as its argument and returns a query string with the namespace included in the nested values", function() {
+
+            let queryString = "name=Test&value=30&data[person][name]=tester&data[person][age]=50";
+
+            data = { name: "Test", value: 30, person: { name: "tester", age: 50 } };
+
+            let queryStringResult = request.__getQueryString(data);
+
+            expect(queryStringResult).to.equal(queryString);
+        });
+    });
+
+    describe("Get random integer", function() {
+
+        let request;
+        let url = "http://test.com";
+        let data = { name: "Test", value: 30 };
+        let method = REQUEST.GET;
+
+        before(function() {
+
+            request = new Request(url, data, method);
+        });
+
+        it("should take a min and max of type integer and return a random integer between the min and max value", function() {
+            let min = 100;
+            let max = 500;
+
+            let randomInt = request.__getRandomInt(min, max);
+
+            expect(randomInt).to.be.a("number");
+            expect(randomInt).to.be.above(min);
+            expect(randomInt).to.be.below(max);
+        });
+    });
+
+    describe("JSONP request", function() {
+
+        let request;
+        let url = "http://test.com";
+        let data = { name: "Test", value: 30 };
+        let method = REQUEST.GET;
+        let sandbox;
+        let queryStringStub;
+        let randomIntStub;
+        let resolveSpy;
+
+        before(function() {
+
+            sandbox = sinon.sandbox.create();
+
+            request = new Request(url, data, method);
+
+            let resolve = () => { return 1; };
+
+            resolveSpy = sinon.spy(resolve);
+
+            request.resolve = resolveSpy;
+        });
+
+        beforeEach(function() {
+
+            queryStringStub = sandbox.stub(request, "__getQueryString").returns("name=test");
+
+            randomIntStub = sandbox.stub(request, "__getRandomInt").returns(1);
+        });
+
+        afterEach(function() {
+
+            sandbox.restore();
+        });
+
+        it("should call getQueryString once with an object as its argument", function() {
+
+            request.__jsonp();
+
+            expect(queryStringStub.calledOnce).to.be.true;
+            expect(queryStringStub.calledWith(data)).to.be.true;
+        });
+
+        it("should call getRandomInt once with two arguements of type integer", function() {
+
+            request.__jsonp();
+
+            expect(randomIntStub.calledOnce).to.be.true;
+            expect(randomIntStub.calledWith(sinon.match.number, sinon.match.number)).to.be.true;
+        });
+
+        it("should have a window function equal to a function, call the resolver function once, then set the window function to undefined", function() {
+
+            request.__jsonp();
+
+            expect(window["jsonp1"]).to.be.a("function");
+
+            window["jsonp1"].call(request);
+
+            expect(resolveSpy.calledOnce).to.be.true;
+            expect(window["jsonp1"]).to.be.an("undefined");
+        });
+
+        it("should find the script tag in the head secton of the DOM", function() {
+
+            let script = document.getElementById("yellow-lab-1");
+
+            expect(script).to.not.be.null;
+            expect(script.parentElement).to.equal(document.head);
         });
     });
 });

@@ -2,13 +2,16 @@
 
 ## Description
 
-* A small compact library for Ajax (currently only supports GET and POST) and JSONP requests.
-*
-* This library is specifically designed to be consumed by browserify or any other dependency
-* bundle that supports "require". This library does not conform to UMD (Univeral Module Definition)
-* for simplicity reasons. The library has a very small footprint for that reason.
+* A small and simple library for Ajax and JSONP requests.
+ * Currently only supports GET and POST when using the built in retreive function.
 
-## Usage
+### Notes
+
+* This library is specifically designed to be consumed by browserify, webpack, or any other
+bundler that supports "require". This library does not conform to UMD (Univeral Module Definition)
+for simplicity reasons.
+
+## Examples
 
 ```
 #!javascript
@@ -18,6 +21,11 @@ import YellowLab from './lib/yellowlab';
 
 let lab = new YellowLab();
 
+/**
+ *  Making requests using the built in yellow lab functionality.
+ */
+
+//Using a generator
 function* getResults() {
   yield lab.retreive('/echo/json/');
   yield lab.retreive('/echo/json/', "GET");
@@ -47,4 +55,36 @@ resultsThree.then(function(data)
   console.log("Results Three", data);
 });
 
+/**
+ *  Making requests using the request object.
+ */
+
+//Passing a request to a service object for manipulation before making the request.
+let service = function(request)
+{
+  if(request instanceof Request)
+  {
+    request.data = {
+      'name': 'data munipulated by a service'
+    }
+  }
+}
+
+let req = lab.getNewRequest('/echo/json/', REQUEST.GET, { name: "initial data" });
+
+service(req);
+
+//Async
+let promise = lab.getNewPromise(req.handle.bind(req));
+
+promise.then((data) => {
+  console.log("Service request:", data);
+});
+
+//Sync
+let res = req.handle((data) => {
+  //Resolver
+}, (data) => {
+  //Rejector
+});
 ```

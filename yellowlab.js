@@ -20,12 +20,12 @@ class YellowLab {
 	 * HTTP request types. EX (GET, POST, DELETE, PATCH, PUT)
 	 *
 	 * @param {String} url
-	 * @param {String} method
 	 * @param {Object} data
+     * @param {String} method
 	 * @return {Promise}
 	 */
-    retreive(url, method = REQUEST.POST, data = {}) {
-        let request = this.getNewRequest(url, method, data);
+    retreive(url, data = {}, method = REQUEST.GET) {
+        let request = this.getNewRequest(url, data, method);
 
         return this.getNewPromise(request.handle.bind(request));
     }
@@ -38,7 +38,7 @@ class YellowLab {
 	 * @return {Promise}
 	 */
     retreiveJsonp(url, data) {
-        let request = this.getNewRequest(url, REQUEST.JSONP, data);
+        let request = this.getNewRequest(url, data, REQUEST.JSONP);
 
         return this.getNewPromise(request.handle.bind(request));
     }
@@ -47,11 +47,11 @@ class YellowLab {
 	 * Get a new Request instance.
 	 *
 	 * @param {String} url
-	 * @param {String} method
 	 * @param {Object} data
+     * @param {String} method
 	 * @return {Request}
 	 */
-    getNewRequest(url, method, data) {
+    getNewRequest(url, data, method) {
         return new Request(url, data, method);
     }
 

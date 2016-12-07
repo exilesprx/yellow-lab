@@ -70,7 +70,7 @@ let service = function(request)
   }
 }
 
-let req = lab.getNewRequest('/echo/json/', REQUEST.GET, { name: "initial data" });
+let req = lab.getNewRequest('/echo/json/', { name: "initial data" });
 
 service(req);
 

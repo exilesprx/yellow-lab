@@ -140,18 +140,20 @@ describe("YellowLab", function () {
 
             promiseStub.returns(null);
 
-            yl.retreive(url, method, data);
+            yl.retreive(url, data, method);
 
             expect(requestStub.calledOnce).to.be.true;
 
-            expect(requestStub.calledWith(sinon.match.string, sinon.match.string, sinon.match.object));
+            expect(requestStub.calledWith(sinon.match.string, sinon.match.object, sinon.match.string)).to.be.true;
+
+            expect(requestStub.calledWith(url, data, method)).to.be.true;
         });
 
         it("should call getNewPromise with a handler function one time", function () {
 
             promiseStub.returns(null);
 
-            yl.retreive(url, method, data);
+            yl.retreive(url, data, method);
 
             expect(promiseStub.calledOnce).to.be.true;
 
@@ -211,7 +213,9 @@ describe("YellowLab", function () {
 
             expect(requestStub.calledOnce).to.be.true;
             
-            expect(requestStub.calledWith(sinon.match.string, sinon.match.string, sinon.match.object));
+            expect(requestStub.calledWith(sinon.match.string, sinon.match.object, sinon.match.string)).to.be.true;
+
+            expect(requestStub.calledWith(url, data)).to.be.true;
         });
 
         it("should call getNewPromise with a handler function one time", function () {

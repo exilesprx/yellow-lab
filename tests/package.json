@@ -4,7 +4,7 @@
     "description": "",
     "main": "",
     "scripts": {
-        "test": "./node_modules/karma/bin/rma start karma.conf.js"
+        "test": "./node_modules/karma/bin/karma start karma.conf.js"
     },
     "devDependencies": {
         "babel": "^6.5.2",

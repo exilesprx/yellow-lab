@@ -1,25 +1,36 @@
 {
-  "name": "yellow-lab",
-  "version": "1.0.0",
-  "description": "Ajax request library.",
-  "main": "index.js",
-  "repository": {
-    "url": "git+ssh://git@bitbucket.org/exilesprx/yellow-lab.git",
-    "type": "git"
-  },
-  "author": "Andrew Campbell <campbell.andrew86@gmail.com>",
-  "license": "MIT",
-  "dependencies": {
-    "promise": "^7.1.1"
-  },
-  "homepage": "https://bitbucket.org/exilesprx/yellow-lab#readme",
-  "directories": {
-    "test": "tests"
-  },
-  "scripts": {
-    "test": "./tests/node_modules/karma/bin/rma start karma.conf.js"
-  },
-  "devDependencies": {
-    "eslint": "^3.11.1"
-  }
+    "name": "yellow-lab",
+    "version": "1.0.0",
+    "description": "Ajax request library.",
+    "main": "yellowlab.js",
+    "repository": {
+        "url": "git+ssh://git@bitbucket.org/exilesprx/yellow-lab.git",
+        "type": "git"
+    },
+    "author": "Andrew Campbell <campbell.andrew86@gmail.com>",
+    "contributors": [
+        {
+            "name": "Andrew Campbell",
+            "email": "campbell.andrew86@gmail.com"
+        }
+    ],
+    "license": "MIT",
+    "dependencies": {
+        "promise": "^7.1.1"
+    },
+    "homepage": "https://bitbucket.org/exilesprx/yellow-lab#readme",
+    "directories": {
+        "test": "tests"
+    },
+    "scripts": {
+        "test": "cd tests && ./node_modules/karma/bin/karma start karma.conf.js"
+    },
+    "keywords": [
+        "ajax",
+        "jsonp",
+        "yellowlab"
+    ],
+    "devDependencies": {
+        "eslint": "^3.11.1"
+    }
 }

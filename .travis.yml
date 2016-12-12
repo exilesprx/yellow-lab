@@ -11,7 +11,9 @@ env:
 before_install:
     - npm install -g yarn
 
-install: yarn install
+install:
+    - yarn install
+    - cd tests && yarn install
 
 cache:
     yarn: true

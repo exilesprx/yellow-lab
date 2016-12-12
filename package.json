@@ -23,7 +23,7 @@
         "test": "tests"
     },
     "scripts": {
-        "test": "cd tests && ./node_modules/karma/bin/karma start karma.conf.js"
+        "test": "cd tests && npm test"
     },
     "keywords": [
         "ajax",

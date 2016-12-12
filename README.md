@@ -1,3 +1,4 @@
+![Build status](http://travis-ci.org/exilesprx/yellow-lab.svg?branch=master)
 # Yellow Lab
 
 ## Description

@@ -9,13 +9,13 @@ import sinon from "sinon";
 describe("YellowLab", function () {
     describe("Initialization", function () {
 
-        it("has a namespace of data", function () {
+        it("should have a namespace of data", function () {
             let yl = new YellowLab();
 
             expect(yl).to.have.property("queryNamespace").and.equal("data");
         });
 
-        it("has a namespace of foo", function () {
+        it("should have a namespace of foo", function () {
             let yl = new YellowLab("foo");
 
             expect(yl).to.have.property("queryNamespace").and.equal("foo");
@@ -31,7 +31,7 @@ describe("YellowLab", function () {
             yl = new YellowLab();
         });
 
-        it("creates a new request", function () {
+        it("should create a new request", function () {
 
             let req = yl.getNewRequest("a", "b", {});
             let req2 = yl.getNewRequest("c", "d", {});
@@ -58,7 +58,7 @@ describe("YellowLab", function () {
             sandbox.restore();
         });
 
-        it("creates a new promise and the promise has the first argument set as 'handler'", function (done) {
+        it("should create a new promise with one argument set as 'handler'", function (done) {
 
             let handler = () => { done(); };
 

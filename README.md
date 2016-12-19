@@ -1,4 +1,6 @@
-![Build status](http://travis-ci.org/exilesprx/yellow-lab.svg?branch=master)
+[![Build status](http://travis-ci.org/exilesprx/yellow-lab.svg?branch=master)](https://travis-ci.org/exilesprx/yellow-lab/branches)
+[![License](https://img.shields.io/badge/license-MIT-orange.svg)]()
+
 # Yellow Lab
 
 ## Description

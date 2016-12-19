@@ -8,7 +8,7 @@ describe("Request", function () {
 
     describe("Initialization", function () {
 
-        it("has properties url, data, and method set to a value with a default namespace set to the default value", function () {
+        it("should have properties url, data, and method set to a value with a default namespace set to the default value", function () {
             let url = "http://test.com";
             let method = REQUEST.GET;
             let data = { name: "test" };
@@ -22,7 +22,7 @@ describe("Request", function () {
             expect(request).to.have.property("namespace").and.equal(namespace);
         });
 
-        it("has properties url, data, and method set to a value with a default namespace set a value", function () {
+        it("should have properties url, data, and method set to a value with a default namespace set a value", function () {
             let url = "http://test.com";
             let method = REQUEST.POST;
             let data = { name: "test" };
@@ -78,7 +78,7 @@ describe("Request", function () {
             request.handle(res, rej);
 
             expect(request).to.have.property("method").and.equal(REQUEST.GET);
-            sinon.assert.calledOnce(http);
+            expect(http.calledOnce).to.be.true;
         });
 
         it("should call handle and __http should be called once with method equal to POST", function () {
@@ -87,7 +87,7 @@ describe("Request", function () {
             request.handle(res, rej);
 
             expect(request).to.have.property("method").and.equal(REQUEST.POST);
-            sinon.assert.calledOnce(http);
+            expect(http.calledOnce).to.be.true;
         });
 
         it("should handle and __jsonp should be called once with method equal to JSONP", function () {
@@ -96,7 +96,7 @@ describe("Request", function () {
             request.handle(res, rej);
 
             expect(request).to.have.property("method").and.equal(REQUEST.JSONP);
-            sinon.assert.calledOnce(jsonp);
+            expect(jsonp.calledOnce).to.be.true;
         });
     });
 
@@ -141,7 +141,7 @@ describe("Request", function () {
             sinon.FakeXMLHttpRequest.restore();
         });
 
-        it("calls getQueryString once with an single argument of type Object", function () {
+        it("should call getQueryString once with an single argument of type Object", function () {
             request.__http();
 
             expect(queryStringStub.calledOnce).to.be.true;
@@ -149,13 +149,13 @@ describe("Request", function () {
             expect(queryStringStub.calledWith(sinon.match.object)).to.be.true;
         });
 
-        it("calls getRequest once", function () {
+        it("should call getRequest once", function () {
             request.__http();
 
             expect(requestStub.calledOnce).to.be.true;
         });
 
-        it("calls isValidRequestObject once with ActiveXObject or XMLHttpRequest as its argument", function () {
+        it("should call isValidRequestObject once with ActiveXObject or XMLHttpRequest as its argument", function () {
             requestStub.returns(xhr);
 
             request.__http();
@@ -165,7 +165,7 @@ describe("Request", function () {
             expect(isValidRequestStub.calledWith(sinon.match.instanceOf(xhr.constructor)));
         });
 
-        it("calls setupRequest once with ActiveXObject or XMLHttpRequest as its argument", function () {
+        it("should call setupRequest once with ActiveXObject or XMLHttpRequest as its argument", function () {
             requestStub.returns(xhr);
             isValidRequestStub.returns(true);
 
@@ -176,7 +176,7 @@ describe("Request", function () {
             expect(setupRequestStub.calledWith(sinon.match.instanceOf(xhr.constructor)));
         });
 
-        it("calls the ActiveXObject or XMLHttpRequest method send once with the string from getQueryString", function () {
+        it("should call the ActiveXObject or XMLHttpRequest method send once with the string from getQueryString", function () {
             let queryString = "name=test&data=1";
             requestStub.returns(xhr);
             isValidRequestStub.returns(true);
@@ -280,7 +280,7 @@ describe("Request", function () {
             xhr = new FakeXhr();
         });
 
-        it("returns a new ActiveXObject or XMLHttpRequest object", function() {
+        it("should return a new ActiveXObject or XMLHttpRequest object", function() {
 
             let result = request.__getRequest();
             

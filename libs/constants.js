@@ -2,9 +2,12 @@
  * Object for HTTP requests verbs.
  */
 const REQUEST = {
-    GET: "GET",
-    POST: "POST",
-    JSONP: "JSONP"
+    GET:    "GET",
+    POST:   "POST",
+    PUT:    "PUT",
+    PATCH:  "PATCH",
+    DELETE: "DELETE",
+    JSONP:  "JSONP"
 }
 
 /**

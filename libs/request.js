@@ -75,6 +75,9 @@ class Request {
         switch (this.method) {
 
             case REQUEST.GET:
+            case REQUEST.PUT:
+            case REQUEST.PATCH:
+            case REQUEST.DELETE:
                 request.setRequestHeader("Content-type", HEADERS.CONTENT_TYPE.JSON);
                 break;
 

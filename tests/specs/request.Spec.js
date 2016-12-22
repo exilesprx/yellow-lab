@@ -433,8 +433,8 @@ describe("Request", function () {
             let randomInt = request.__getRandomInt(min, max);
 
             expect(randomInt).to.be.a("number");
-            expect(randomInt).to.be.above(min);
-            expect(randomInt).to.be.below(max);
+            expect(randomInt).to.be.above(min - 1);
+            expect(randomInt).to.be.below(max + 1);
         });
     });
 

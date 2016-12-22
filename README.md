@@ -6,7 +6,6 @@
 ## Description
 
 * A small and simple library for Ajax and JSONP requests.
- * Currently only supports GET and POST when using the built in retreive function.
 
 ### Notes
 

@@ -90,6 +90,33 @@ describe("Request", function () {
             expect(http.calledOnce).to.be.true;
         });
 
+        it("should call handle and __http should be called once with method equal to PUT", function () {
+            request.method = REQUEST.PUT;
+
+            request.handle(res, rej);
+
+            expect(request).to.have.property("method").and.equal(REQUEST.PUT);
+            expect(http.calledOnce).to.be.true;
+        });
+
+        it("should call handle and __http should be called once with method equal to PATCH", function () {
+            request.method = REQUEST.PATCH;
+
+            request.handle(res, rej);
+
+            expect(request).to.have.property("method").and.equal(REQUEST.PATCH);
+            expect(http.calledOnce).to.be.true;
+        });
+
+        it("should call handle and __http should be called once with method equal to DELETE", function () {
+            request.method = REQUEST.DELETE;
+
+            request.handle(res, rej);
+
+            expect(request).to.have.property("method").and.equal(REQUEST.DELETE);
+            expect(http.calledOnce).to.be.true;
+        });
+
         it("should handle and __jsonp should be called once with method equal to JSONP", function () {
             request.method = REQUEST.JSONP;
 
@@ -241,7 +268,7 @@ describe("Request", function () {
             expect(openSpy.calledWith(method, url, true)).to.be.true;
         });
 
-        it("should call setRequestHeader on ActiveXObject or XMLHttpRequest with arguements of Content-type = HEADERS.CONTENT_TYPE.JSON", function () {
+        it("should call setRequestHeader with Content-type = HEADERS.CONTENT_TYPE.JSON for GET request", function () {
             request.method = REQUEST.GET;
 
             request.__setupRequest(xhr);
@@ -251,7 +278,40 @@ describe("Request", function () {
             expect(setRequestHeaderSpy.calledWith(sinon.match.string, sinon.match.string)).to.be.true;
         });
 
-        it("should call setRequestHeader on ActiveXObject or XMLHttpRequest with arguements of Content-type = HEADERS.CONTENT_TYPE.FORM_ENCODED and X-Requested-With = HEADERS.REQUESTED", function () {
+        it("should call setRequestHeader with Content-type = HEADERS.CONTENT_TYPE.JSON for PUT request", function() {
+
+            request.method = REQUEST.PUT;
+
+            request.__setupRequest(xhr);
+
+            expect(setRequestHeaderSpy.calledOnce).to.be.true;
+            expect(setRequestHeaderSpy.calledWith("Content-type", HEADERS.CONTENT_TYPE.JSON)).to.be.true;
+            expect(setRequestHeaderSpy.calledWith(sinon.match.string, sinon.match.string)).to.be.true;
+        });
+
+        it("should call setRequestHeader with Content-type = HEADERS.CONTENT_TYPE.JSON for PATCH request", function() {
+
+            request.method = REQUEST.PATCH;
+
+            request.__setupRequest(xhr);
+
+            expect(setRequestHeaderSpy.calledOnce).to.be.true;
+            expect(setRequestHeaderSpy.calledWith("Content-type", HEADERS.CONTENT_TYPE.JSON)).to.be.true;
+            expect(setRequestHeaderSpy.calledWith(sinon.match.string, sinon.match.string)).to.be.true;
+        });
+
+        it("should call setRequestHeader with Content-type = HEADERS.CONTENT_TYPE.JSON for DELETE request", function() {
+
+            request.method = REQUEST.DELETE;
+
+            request.__setupRequest(xhr);
+
+            expect(setRequestHeaderSpy.calledOnce).to.be.true;
+            expect(setRequestHeaderSpy.calledWith("Content-type", HEADERS.CONTENT_TYPE.JSON)).to.be.true;
+            expect(setRequestHeaderSpy.calledWith(sinon.match.string, sinon.match.string)).to.be.true;
+        });
+
+        it("should call setRequestHeader with Content-type = HEADERS.CONTENT_TYPE.FORM_ENCODED and X-Requested-With = HEADERS.REQUESTED", function () {
             request.method = REQUEST.POST;
 
             request.__setupRequest(xhr);
